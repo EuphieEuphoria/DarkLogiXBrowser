@@ -9,6 +9,9 @@ using FrooxEngine;
 using FrooxEngine.LogiX;
 using FrooxEngine.UIX;
 using BaseX;
+using FrooxEngine.LogiX.Color;
+using FrooxEngine.LogiX.Input;
+using FrooxEngine.LogiX.Operators;
 
 namespace DarkLogiXBrowser
 {
@@ -28,6 +31,7 @@ namespace DarkLogiXBrowser
         static Uri buttonHoverEnterUri = new Uri("neosdb:///a8d42dd3b361127483dec673e934421ddfe3e29f9bad1e37f56e878a66fcf325");
         static Uri panelNormalMapUri = new Uri("neosdb:///95ef1fd8a153ad3d4c2588563274f961da94b812f90ffb4a235e624684c8e332");
         static Uri panelMSMapUri = new Uri("neosdb:///a38400e37e4e6b96d2e49557e0c7f614475edef637b2474f4c017f7e3f4971dc");
+        static Uri backPanelAlbedoMapUri = new Uri("neosdb:///79e4969ec397d1d5de46cbc475b94725617351f0b1d559421b32670cc11a1d5a.png");
 
         public override void OnEngineInit()
         {
@@ -275,6 +279,65 @@ namespace DarkLogiXBrowser
 
                 DriveNode.Source.Target = GreaterThan;
                 DriveNode.DriveTarget.Target = ButtonSounds.EnabledField;
+
+                StaticTexture2D backSpriteTexture = AssetsSlot.AttachComponent<StaticTexture2D>(true, null);
+                backSpriteTexture.URL.Value = backPanelAlbedoMapUri;
+                backSpriteTexture.FilterMode.Value = TextureFilterMode.Anisotropic;
+                backSpriteTexture.AnisotropicLevel.Value = 16;
+                UnlitMaterial backSpriteUnlit = AssetsSlot.AttachComponent<UnlitMaterial>(true, null);
+                backSpriteUnlit.Texture.Target = backSpriteTexture;
+                backSpriteUnlit.TintColor.Value = new color(1.25f, 1.25f, 1.25f, 1f);
+                backSpriteUnlit.BlendMode.Value = BlendMode.Alpha;
+
+
+                Slot backSprite = slot.AddSlot("Back Panel Sprite");
+                QuadMesh coolBackMesh = backSprite.AttachMesh<QuadMesh>(backSpriteUnlit, false, 0);
+                coolBackMesh.Size.Value = new float2(.4f, .4f);
+                backSprite.LocalPosition = new float3(0f, 0f, .0053f);
+                backSprite.LocalRotation = floatQ.Euler(0f, 180f, 0f);
+
+                Slot colorDriver = backSprite.AddSlot("Color Driver");
+
+                List<IField<color>> colorTargets = new List<IField<color>>();
+                colorTargets.Add(coolBackMesh.UpperLeftColor);
+                colorTargets.Add(coolBackMesh.LowerLeftColor);
+                colorTargets.Add(coolBackMesh.LowerRightColor);
+                colorTargets.Add(coolBackMesh.UpperRightColor);
+
+                var T = colorDriver.AttachComponent<TimeNode>();
+                var TMulti = colorDriver.AttachComponent<Mul_Float>();
+                var TMultiValue = colorDriver.AttachComponent<ValueNode<float>>();
+                TMultiValue.Value.Value = .25f;
+
+                var colorRot = .25f;
+             
+                var colorSaturation = colorDriver.AttachComponent<ValueNode<float>>();
+                colorSaturation.Value.Value = .75f;
+
+                var colorValue = colorDriver.AttachComponent<ValueNode<float>>();
+                colorValue.Value.Value = 1f;
+
+
+                TMulti.A.Target = T;
+                TMulti.B.Target = TMultiValue;
+
+                for (int i = 0; i < colorTargets.Count; i++)
+                {
+                    var colorRotHolder = colorDriver.AttachComponent<ValueNode<float>>();
+                    colorRotHolder.Value.Value = colorRot * i;
+                    var addition = colorDriver.AttachComponent<Add_Float>();
+                    addition.A.Target = TMulti;
+                    addition.B.Target = colorRotHolder;
+                    var hsv = colorDriver.AttachComponent<HSV_ToColor>();
+                    hsv.H.Target = addition;
+                    hsv.S.Target = colorSaturation;
+                    hsv.V.Target = colorValue;
+                    var driver = colorDriver.AttachComponent<DriverNode<color>>();
+                    driver.Source.Target = hsv;
+                    driver.DriveTarget.Target = colorTargets[i];
+
+                }
+
             }
         }
 
