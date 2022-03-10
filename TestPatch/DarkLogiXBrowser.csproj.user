@@ -6,4 +6,10 @@
     <StartArguments>-DontAutoOpenCloudHome -SkipIntroTutorial -Screen -LoadAssembly "C:\Neos\app\Libraries\NeosModLoader.dll"</StartArguments>
     <StartWorkingDirectory>C:\Neos\app\</StartWorkingDirectory>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>X:\SteamLibrary\steamapps\common\NeosVR\Neos.exe</StartProgram>
+    <StartArguments>-LoadAssembly "X:\SteamLibrary\steamapps\common\NeosVR\Libraries\NeosModLoader.dll" -Screen</StartArguments>
+    <StartWorkingDirectory>X:\SteamLibrary\steamapps\common\NeosVR\</StartWorkingDirectory>
+  </PropertyGroup>
 </Project>

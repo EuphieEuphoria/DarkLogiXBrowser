@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\..\Neos\app\0Harmony.dll</HintPath>
+      <HintPath>X:\SteamLibrary\steamapps\common\NeosVR\0Harmony.dll</HintPath>
     </Reference>
     <Reference Include="BaseX">
       <HintPath>..\..\..\..\..\..\..\Neos\app\Neos_Data\Managed\BaseX.dll</HintPath>
@@ -44,7 +44,7 @@
       <HintPath>..\..\..\..\..\..\..\Neos\app\Neos_Data\Managed\FrooxEngine.dll</HintPath>
     </Reference>
     <Reference Include="NeosModLoader">
-      <HintPath>..\..\..\..\..\..\..\Neos\app\Libraries\NeosModLoader.dll</HintPath>
+      <HintPath>X:\SteamLibrary\steamapps\common\NeosVR\Libraries\NeosModLoader.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -60,6 +60,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo f | xcopy /y /f "$(TargetDir)$(TargetFileName)" "C:\Neos\app\nml_mods\DarkLogiXBrowser.dll"</PostBuildEvent>
+    <PostBuildEvent>echo f | xcopy /y /f "$(TargetDir)$(TargetFileName)" "X:\SteamLibrary\steamapps\common\NeosVR\nml_mods\DarkLogiXBrowser.dll"</PostBuildEvent>
   </PropertyGroup>
 </Project>
